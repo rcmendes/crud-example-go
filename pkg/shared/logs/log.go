@@ -12,6 +12,13 @@ var (
 	errorLogger   *log.Logger
 )
 
+const LogLevelDebug = 1
+const LogLevelInfo = 2
+const LogLevelWarning = 3
+const LogLevelError = 4
+
+var logLevel = LogLevelInfo
+
 func init() {
 	// output, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	// if err != nil {
@@ -29,17 +36,25 @@ func init() {
 }
 
 func Debug(message ...interface{}) {
-	debugLogger.Println(message...)
+	if logLevel == LogLevelDebug {
+		debugLogger.Println(message...)
+	}
 }
 
 func Info(message ...interface{}) {
-	infoLogger.Println(message...)
+	if logLevel <= LogLevelInfo {
+		infoLogger.Println(message...)
+	}
 }
 
 func Warning(message ...interface{}) {
-	warningLogger.Println(message...)
+	if logLevel <= LogLevelWarning {
+		warningLogger.Println(message...)
+	}
 }
 
 func Error(message ...interface{}) {
-	errorLogger.Println(message...)
+	if logLevel <= LogLevelError {
+		errorLogger.Println(message...)
+	}
 }
