@@ -31,8 +31,6 @@ func NewFromService(service entities.Service) *ServiceModel {
 	}
 }
 
-//TODO Review the build strategy
-
 func (m *ServiceModel) ToEntity() (entities.Service, error) {
 	service, err := entities.NewService(
 		uuid.MustParse(m.ID),
