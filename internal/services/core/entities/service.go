@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/rcmendes/crud-example-go/internal/services/core/exceptions"
+	"github.com/rcmendes/crud-example-go/internal/services/core/errors"
 )
 
 type Service interface {
@@ -41,7 +41,7 @@ func (svc *service) String() string {
 
 func (svc *service) WithDescription(description string) error {
 	if len(description) > 1024 {
-		return exceptions.NewInvalidFieldMaxLengthError("description", 1024)
+		return errors.InvalidFieldMaxLengthError("description", 1024)
 	}
 
 	svc.description = &description
@@ -51,7 +51,7 @@ func (svc *service) WithDescription(description string) error {
 
 func NewService(id uuid.UUID, createdAt time.Time, updatedAt time.Time, name string) (Service, error) {
 	if len(name) < 1 || len(name) > 20 {
-		return nil, exceptions.NewInvalidFieldRangeLengthError("name", 1, 20)
+		return nil, errors.InvalidFieldRangeLengthError("name", 1, 20)
 	}
 
 	service := &service{

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/rcmendes/crud-example-go/internal/services/core/entities"
+	"github.com/rcmendes/crud-example-go/internal/services/storage/database/errors"
 )
 
 type SQLite3ServicesStorage struct{}
@@ -13,7 +14,7 @@ func (storage *SQLite3ServicesStorage) FindAll(ctx context.Context) (entities.Se
 	rows, err := DB.QueryxContext(ctx, query)
 
 	if err != nil {
-		return nil, NewDBQueryError(err)
+		return nil, errors.DBQueryError(err)
 	}
 
 	var list entities.ServiceList
@@ -22,7 +23,7 @@ func (storage *SQLite3ServicesStorage) FindAll(ctx context.Context) (entities.Se
 		var model ServiceModel
 		err = rows.StructScan(&model)
 		if err != nil {
-			return nil, NewDBQueryError(err)
+			return nil, errors.DBQueryError(err)
 		}
 
 		service, err := model.ToEntity()
@@ -42,7 +43,7 @@ func (storage *SQLite3ServicesStorage) Insert(ctx context.Context, service entit
 		service.UpdatedAt(), service.Name(), service.Description())
 
 	if err != nil {
-		return NewDBQueryError(err)
+		return errors.DBQueryError(err)
 	}
 
 	return nil
