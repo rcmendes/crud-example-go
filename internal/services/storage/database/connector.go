@@ -6,7 +6,6 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/rcmendes/crud-example-go/pkg/shared/logs"
 )
 
 var once sync.Once
@@ -40,7 +39,7 @@ func InitDB() {
 		}
 
 		if err := db.Ping(); err != nil {
-			logs.Error(err)
+			log.Fatal(err)
 		}
 
 		DB = db
