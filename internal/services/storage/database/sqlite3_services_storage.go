@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/rcmendes/crud-example-go/internal/services/core/entities"
-	"github.com/rcmendes/crud-example-go/internal/services/storage/database/errors"
+	"github.com/rcmendes/crud-example-go/internal/services/core/errors"
 )
 
 type SQLite3ServicesStorage struct{}
@@ -35,6 +35,21 @@ func (storage *SQLite3ServicesStorage) FindAll(ctx context.Context) (entities.Se
 	}
 
 	return list, nil
+}
+
+func (storage *SQLite3ServicesStorage) ExistsByName(ctx context.Context, name string) (bool, error) {
+	query := "SELECT id FROM services WHERE name LIKE ?"
+	row := DB.QueryRowxContext(ctx, query, name)
+
+	hasReturn := row != nil
+
+	var err error
+
+	if row != nil {
+		err = errors.DBQueryError(row.Err())
+	}
+
+	return hasReturn, err
 }
 
 func (storage *SQLite3ServicesStorage) Insert(ctx context.Context, service entities.Service) error {

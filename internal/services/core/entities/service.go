@@ -40,8 +40,8 @@ func (svc *service) String() string {
 }
 
 func (svc *service) WithDescription(description string) error {
-	if len(description) > 1024 {
-		return errors.InvalidFieldMaxLengthError("description", 1024)
+	if err := ValidateServiceDescription(description); err != nil {
+		return err
 	}
 
 	svc.description = &description
@@ -50,8 +50,8 @@ func (svc *service) WithDescription(description string) error {
 }
 
 func NewService(id uuid.UUID, createdAt time.Time, updatedAt time.Time, name string) (Service, error) {
-	if len(name) < 1 || len(name) > 20 {
-		return nil, errors.InvalidFieldRangeLengthError("name", 1, 20)
+	if err := ValidateServiceName(name); err != nil {
+		return nil, err
 	}
 
 	service := &service{
@@ -64,4 +64,19 @@ func NewService(id uuid.UUID, createdAt time.Time, updatedAt time.Time, name str
 	}
 
 	return service, nil
+}
+
+func ValidateServiceName(name string) error {
+	if len(name) < 1 || len(name) > 20 {
+		return errors.InvalidFieldRangeLengthError("name", 1, 20)
+	}
+
+	return nil
+}
+func ValidateServiceDescription(description string) error {
+	if len(description) > 1024 {
+		return errors.InvalidFieldMaxLengthError("description", 1024)
+	}
+
+	return nil
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/rcmendes/crud-example-go/internal/services/core/entities"
+	"github.com/rcmendes/crud-example-go/internal/services/core/errors"
 )
 
 type CreateServiceCommand struct {
@@ -14,14 +15,29 @@ type CreateServiceCommand struct {
 }
 
 func (manager *serviceManagerImpl) Create(command CreateServiceCommand) error {
-	//TODO check if exists
 	ctx := context.Background()
+	//TODO context timeout must be defined in the manager
 	ctx, cancelFn := context.WithTimeout(ctx, 500*time.Millisecond)
 
 	defer cancelFn()
 
+	name := command.Name
+
+	if err := entities.ValidateServiceName(name); err != nil {
+		return errors.ConstraintError(err)
+	}
+
+	exists, err := manager.storage.ExistsByName(ctx, name)
+	if err != nil {
+		return errors.DatabaseError(err)
+	}
+
+	if exists {
+		return errors.ServiceAlreadyExistsError(name)
+	}
+
 	now := time.Now().UTC()
-	service, err := entities.NewService(uuid.New(), now, now, command.Name)
+	service, err := entities.NewService(uuid.New(), now, now, name)
 	if err != nil {
 		return err
 	}
