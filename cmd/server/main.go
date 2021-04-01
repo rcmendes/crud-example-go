@@ -23,7 +23,7 @@ func main() {
 		command := usecases.CreateServiceCommand{Name: name, Description: &description}
 
 		if err := serviceManager.Create(command); err != nil {
-			log.Fatal(err)
+			log.Printf("%+q\n", err)
 		}
 	}
 
@@ -35,6 +35,27 @@ func main() {
 
 	fmt.Println("List of Services:")
 	for i, s := range list {
-		fmt.Printf("\n%d: %s", i, s.String())
+		fmt.Printf("%d: %s\n", i, s.String())
+	}
+
+	for i := 1; i <= 2; i++ {
+		name := fmt.Sprintf("Name %d", i)
+		description := fmt.Sprintf("Description %d", i)
+		command := usecases.CreateServiceCommand{Name: name, Description: &description}
+
+		if err := serviceManager.Create(command); err != nil {
+			log.Printf("%+q\n", err)
+		}
+	}
+
+	list, err = serviceManager.ListAllServices()
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Println("List of Services:")
+	for i, s := range list {
+		fmt.Printf("%d: %s\n", i, s.String())
 	}
 }

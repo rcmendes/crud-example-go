@@ -17,9 +17,9 @@ type CreateServiceCommand struct {
 func (manager *serviceManagerImpl) Create(command CreateServiceCommand) error {
 	ctx := context.Background()
 	//TODO context timeout must be defined in the manager
-	ctx, cancelFn := context.WithTimeout(ctx, 500*time.Millisecond)
 
-	defer cancelFn()
+	// ctx, cancelFn := context.WithTimeout(ctx, 500*time.Millisecond)
+	// defer cancelFn()
 
 	name := command.Name
 
