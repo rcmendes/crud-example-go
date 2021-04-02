@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"github.com/rcmendes/crud-example-go/internal/services/core/entities"
+	"github.com/rcmendes/crud-example-go/internal/services/ports"
 )
 
 type ServiceManager interface {
@@ -10,9 +11,9 @@ type ServiceManager interface {
 }
 
 type serviceManagerImpl struct {
-	storage ServiceStorage
+	storage ports.ServiceStorage
 }
 
-func NewServiceManager(serviceStorage ServiceStorage) ServiceManager {
+func NewServiceManager(serviceStorage ports.ServiceStorage) ServiceManager {
 	return &serviceManagerImpl{serviceStorage}
 }
