@@ -47,15 +47,4 @@ func main() {
 			log.Printf("%+q\n", err)
 		}
 	}
-
-	list, err = serviceManager.ListAllServices()
-
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	fmt.Println("List of Services:")
-	for i, s := range list {
-		fmt.Printf("%d: %s\n", i, s.String())
-	}
 }
