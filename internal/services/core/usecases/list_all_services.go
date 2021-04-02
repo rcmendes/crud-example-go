@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/rcmendes/crud-example-go/internal/services/core/entities"
+	"github.com/rs/zerolog/log"
 )
 
 func (manager *serviceManagerImpl) ListAllServices() (entities.ServiceList, error) {
-	// return manager.data, nil
-
+	defer log.Debug().Msg("Fetched all the services from the storage.")
 	ctx := context.Background()
 	ctx, cancelFn := context.WithTimeout(ctx, 500*time.Millisecond)
 

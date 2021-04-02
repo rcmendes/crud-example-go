@@ -1,18 +1,57 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"log"
+	"os"
+	"strings"
+	"time"
 
 	"github.com/rcmendes/crud-example-go/internal/services/core/usecases"
 	"github.com/rcmendes/crud-example-go/internal/services/storage/database"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-//TODO Create log level and init function
+func initLogger() {
+	// zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	debug := flag.Bool("debug", false, "sets log level to debug")
 
-func main() {
+	flag.Parse()
+
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if *debug {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+
+		output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
+
+		// output.FormatLevel = func(i interface{}) string {
+		// 	return strings.ToUpper(fmt.Sprintf("| %-6s|", i))
+		// }
+		// output.FormatMessage = func(i interface{}) string {
+		// 	return fmt.Sprintf("***%s****", i)
+		// }
+		output.FormatFieldName = func(i interface{}) string {
+			return fmt.Sprintf("%s:", i)
+		}
+		output.FormatFieldValue = func(i interface{}) string {
+			return strings.ToUpper(fmt.Sprintf("%s", i))
+		}
+		log.Logger = zerolog.New(output).With().Timestamp().Logger()
+	}
+
+}
+
+//TODO Create log level and init function
+func init() {
+	initLogger()
+
 	database.InitDB()
 	database.CreateTables()
+}
+
+func main() {
+	log.Info().Msg("Running CLI app.")
 
 	servicesStorage := database.SQLite3ServicesStorage{}
 	serviceManager := usecases.NewServiceManager(&servicesStorage)
@@ -23,14 +62,14 @@ func main() {
 		command := usecases.CreateServiceCommand{Name: name, Description: &description}
 
 		if err := serviceManager.Create(command); err != nil {
-			log.Printf("%+q\n", err)
+			log.Err(err).Send()
 		}
 	}
 
 	list, err := serviceManager.ListAllServices()
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal().Err(err)
 	}
 
 	fmt.Println("List of Services:")
@@ -44,7 +83,7 @@ func main() {
 		command := usecases.CreateServiceCommand{Name: name, Description: &description}
 
 		if err := serviceManager.Create(command); err != nil {
-			log.Printf("%+q\n", err)
+			log.Err(err).Send()
 		}
 	}
 }
