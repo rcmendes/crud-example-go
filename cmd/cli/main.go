@@ -1,89 +1,50 @@
 package main
 
-import (
-	"flag"
-	"fmt"
-	"os"
-	"strings"
-	"time"
+// import (
+// 	"fmt"
 
-	"github.com/rcmendes/crud-example-go/internal/services/core/usecases"
-	"github.com/rcmendes/crud-example-go/internal/services/storage/database"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-)
+// 	"github.com/rcmendes/crud-example-go/internal/services"
+// 	"github.com/rcmendes/crud-example-go/internal/services/core/usecases"
+// 	"github.com/rcmendes/crud-example-go/internal/services/storage/database"
+// 	"github.com/rs/zerolog/log"
+// )
 
-func initLogger() {
-	// zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	debug := flag.Bool("debug", false, "sets log level to debug")
+// func main() {
+// 	services.InitData()
+// 	services.InitLogger()
+// 	log.Info().Msg("Running CLI app.")
 
-	flag.Parse()
+// 	servicesStorage := database.SQLite3ServicesStorage{}
+// 	serviceManager := usecases.NewServiceManager(&servicesStorage)
 
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	if *debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+// 	for i := 1; i <= 10; i++ {
+// 		name := fmt.Sprintf("Name %d", i)
+// 		description := fmt.Sprintf("Description %d", i)
+// 		command := usecases.CreateServiceCommand{Name: name, Description: &description}
 
-		output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
+// 		if err := serviceManager.Create(command); err != nil {
+// 			log.Err(err).Send()
+// 		}
+// 	}
 
-		// output.FormatLevel = func(i interface{}) string {
-		// 	return strings.ToUpper(fmt.Sprintf("| %-6s|", i))
-		// }
-		// output.FormatMessage = func(i interface{}) string {
-		// 	return fmt.Sprintf("***%s****", i)
-		// }
-		output.FormatFieldName = func(i interface{}) string {
-			return fmt.Sprintf("%s:", i)
-		}
-		output.FormatFieldValue = func(i interface{}) string {
-			return strings.ToUpper(fmt.Sprintf("%s", i))
-		}
-		log.Logger = zerolog.New(output).With().Timestamp().Logger()
-	}
+// 	list, err := serviceManager.ListAllServices()
 
-}
+// 	if err != nil {
+// 		log.Fatal().Err(err)
+// 	}
 
-//TODO Create log level and init function
-func init() {
-	initLogger()
+// 	fmt.Println("List of Services:")
+// 	for i, s := range list {
+// 		fmt.Printf("%d: %s\n", i, s.String())
+// 	}
 
-	database.InitDB()
-	database.CreateTables()
-}
+// 	for i := 1; i <= 2; i++ {
+// 		name := fmt.Sprintf("Name %d", i)
+// 		description := fmt.Sprintf("Description %d", i)
+// 		command := usecases.CreateServiceCommand{Name: name, Description: &description}
 
-func main() {
-	log.Info().Msg("Running CLI app.")
-
-	servicesStorage := database.SQLite3ServicesStorage{}
-	serviceManager := usecases.NewServiceManager(&servicesStorage)
-
-	for i := 1; i <= 10; i++ {
-		name := fmt.Sprintf("Name %d", i)
-		description := fmt.Sprintf("Description %d", i)
-		command := usecases.CreateServiceCommand{Name: name, Description: &description}
-
-		if err := serviceManager.Create(command); err != nil {
-			log.Err(err).Send()
-		}
-	}
-
-	list, err := serviceManager.ListAllServices()
-
-	if err != nil {
-		log.Fatal().Err(err)
-	}
-
-	fmt.Println("List of Services:")
-	for i, s := range list {
-		fmt.Printf("%d: %s\n", i, s.String())
-	}
-
-	for i := 1; i <= 2; i++ {
-		name := fmt.Sprintf("Name %d", i)
-		description := fmt.Sprintf("Description %d", i)
-		command := usecases.CreateServiceCommand{Name: name, Description: &description}
-
-		if err := serviceManager.Create(command); err != nil {
-			log.Err(err).Send()
-		}
-	}
-}
+// 		if err := serviceManager.Create(command); err != nil {
+// 			log.Err(err).Send()
+// 		}
+// 	}
+// }

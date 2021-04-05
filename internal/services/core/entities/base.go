@@ -7,15 +7,17 @@ import (
 	"github.com/google/uuid"
 )
 
+type EntityID = uuid.UUID
+
 type Entity interface {
 	String() string
-	ID() uuid.UUID
+	ID() EntityID
 	CreatedAt() time.Time
 	UpdatedAt() time.Time
 }
 
 type entity struct {
-	id        uuid.UUID
+	id        EntityID
 	createdAt time.Time
 	updatedAt time.Time
 }

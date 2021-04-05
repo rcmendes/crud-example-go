@@ -11,3 +11,17 @@ type ServiceStorage interface {
 	FindAll(ctx context.Context) (entities.ServiceList, error)
 	ExistsByName(ctx context.Context, name string) (bool, error)
 }
+
+type CreateServiceRequest interface {
+	Name() string
+	Description() *string
+}
+
+type CreateServiceResponse interface {
+	ID() string
+}
+
+type ServiceManager interface {
+	ListAllServices() (entities.ServiceList, error)
+	Create(service CreateServiceRequest) (CreateServiceResponse, error)
+}

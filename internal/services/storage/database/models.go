@@ -43,7 +43,7 @@ func (m *ServiceModel) ToEntity() (entities.Service, error) {
 	}
 
 	if m.Description != nil {
-		service.WithDescription(*m.Description)
+		service.SetDescription(*m.Description)
 	}
 
 	return service, nil

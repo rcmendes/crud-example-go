@@ -11,7 +11,7 @@ import (
 type Service interface {
 	Entity
 	Name() string
-	WithDescription(description string) error
+	SetDescription(description string) error
 	Description() *string
 	String() string
 }
@@ -39,7 +39,7 @@ func (svc *service) String() string {
 		svc.updatedAt.UTC().Format("2006-01-02T15:04:05-0700"))
 }
 
-func (svc *service) WithDescription(description string) error {
+func (svc *service) SetDescription(description string) error {
 	if err := ValidateServiceDescription(description); err != nil {
 		return err
 	}
